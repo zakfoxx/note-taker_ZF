@@ -2,6 +2,7 @@ let express = require("express");
 let server = express();
 let fs = require("fs");
 let path = require("path");
+const { runInNewContext } = require("vm");
 let PORT = process.env.PORT || 3000;
 
 server.use(express.urlencoded({ extended: true }));
@@ -22,4 +23,16 @@ server.listen(PORT, () => {
   console.log(`listening on PORT ${PORT}`);
 });
 
-// "/api/notes";
+server.post("/api/notes", (req, res) => {
+  fs.readFile("./db/db.json", "utf-8", (error, notes) => {
+    //   res.send(notes);
+    //   res.send(notes);
+    let notesFile = JSON.parse(notes);
+    notesFile.push(req.body);
+    fs.writeFileSync(
+      path.join(__dirname, "./db/db.json"),
+      JSON.stringify(notesFile, null, 2)
+    );
+    res.send(notesFile);
+  });
+});
