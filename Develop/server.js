@@ -27,8 +27,6 @@ server.listen(PORT, () => {
 server.post("/api/notes", (req, res) => {
   req.body.id = newID();
   fs.readFile("./db/db.json", "utf-8", (error, notes) => {
-    //   res.send(notes);
-    //   res.send(notes);
     let notesFile = JSON.parse(notes);
     notesFile.push(req.body);
     fs.writeFileSync(
@@ -36,5 +34,18 @@ server.post("/api/notes", (req, res) => {
       JSON.stringify(notesFile, null, 2)
     );
     res.send(notesFile);
+  });
+});
+
+server.delete("/api/notes/:id", (req, res) => {
+  let noteDelete = req.params.id.replace(":", "");
+  fs.readFile("./db/db.json", "utf-8", (error, notes) => {
+    let notesFile = JSON.parse(notes);
+    let allNotes = notesFile.filter((note) => noteDelete !== note.id);
+    fs.writeFileSync(
+      path.join(__dirname, "./db/db.json"),
+      JSON.stringify(allNotes, null, 2)
+    );
+    res.send(allNotes);
   });
 });
