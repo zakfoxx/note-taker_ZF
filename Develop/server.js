@@ -4,6 +4,7 @@ let fs = require("fs");
 let path = require("path");
 const { runInNewContext } = require("vm");
 let PORT = process.env.PORT || 3000;
+let newID = require("uniqid");
 
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
@@ -24,6 +25,7 @@ server.listen(PORT, () => {
 });
 
 server.post("/api/notes", (req, res) => {
+  req.body.id = newID();
   fs.readFile("./db/db.json", "utf-8", (error, notes) => {
     //   res.send(notes);
     //   res.send(notes);
